@@ -17,4 +17,46 @@ typedef struct Sqstack{
 	(*S).top=(*S).base;
 	(*S).stacksize=STACK_INIT_SIZE;
    return OK;
- }             
+ } 
+
+Status DestroyStack(SqStack *S){
+    free((*S).base);
+    (*S).base=Null;
+    (*S).top=Null; 
+    (*S).stacksize=Null;
+    return 0;
+}
+Status ClearStack(SqStack *S){
+    free((*S).base);
+    (*S).top=(*S).base;
+    return OK;
+}
+Status StackEmpty(SqStack S){
+    if(S.top==S.base){
+        return OK;
+    }
+    return FALSE;
+}
+Status StackLength(SqStack S){
+    return S.top-S.base;
+}
+Status GetTop(SqStack S,SElemType *e){
+    if ( StackEmpty(S) ) {
+        return ERROR;
+    }
+    *e=*(S.top-1);
+    return OK;
+}
+Status Push(SqStack *S,SElemType e){
+    if ( (*S).top-(*S).base>(*S).stacksize  ) {
+        (*S).base=(SElemType *)realloc((*S).base,((*S).stacksize+STACKINCREMENT)*sizeof(SElemType));
+        if ( !S->base ) {
+            exit(OVERFLOW);
+        }
+        S->top=S->base+S->stacksize;
+        S->stacksize+=STACKINCREMENT;
+    }
+    S->top=e;
+    (S->top)++;
+    return OK;
+}
