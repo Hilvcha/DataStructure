@@ -1,12 +1,13 @@
 #define STACK_INIT_SIZE 10
 #define STACKINCREMENT 2
+
 typedef int SElemType;
 typedef int Status;
 typedef struct Sqstack{
 	SElemType *base;
 	SElemType *top;
 	int stacksize;
-}Sqstack;
+}SqStack;
 
  Status InitStack(SqStack *S)
  { /* 构造一个空栈S */
@@ -21,9 +22,9 @@ typedef struct Sqstack{
 
 Status DestroyStack(SqStack *S){
     free((*S).base);
-    (*S).base=Null;
-    (*S).top=Null; 
-    (*S).stacksize=Null;
+    (*S).base=NULL;
+    (*S).top=NULL; 
+    (*S).stacksize=NULL;
     return 0;
 }
 Status ClearStack(SqStack *S){
@@ -56,7 +57,21 @@ Status Push(SqStack *S,SElemType e){
         S->top=S->base+S->stacksize;
         S->stacksize+=STACKINCREMENT;
     }
-    S->top=e;
+    *(S->top)=e;
     (S->top)++;
+    return OK;
+}
+Status Pop(Sqstack *S,SElemType *e){
+   if ((*S).top==(*S).base){
+       return ERROR;
+   }
+   *e=*(--(*S).top);
+   return OK;
+}
+Status StackTraverse(Sqstack S,Status(*visit)(SElemType)){
+    while(S.top>S.base){
+        visit(*S.base);
+        S.base++;
+    }
     return OK;
 }
