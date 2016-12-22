@@ -1,4 +1,4 @@
-typedef struct{
+typedef struct{ //storage as same as length all the time
     char *ch;
     int length;
 }HString;
@@ -78,3 +78,93 @@ Status Concat(HString *T,HString S1,HString S2){
     (*T).length=S1.length+S2.length;
     return OK;
 }
+Status SubString(HString *Sub,HString S,int pos,int len){
+    if ( !(1<=pos&&pos<=StrLength(S)&&0<=len&&len<=StrLength(S)-pos+1) ) {
+        return ERROR;
+    }
+    if(!len){
+        (*Sub).ch=NULL;
+        (*Sub).length=0;
+        return OK;
+    }
+    if((*Sub).ch){
+        free((*T).ch);
+    }
+    (*Sub).ch=(char*)malloc(sizeof(char)*len);
+    if(!(*Sub).ch){
+        exit(OVERFLOW);
+    }
+    for ( int i = pos; i < pos+len; i++ ) {
+        (*Sub).ch[i-pos]=(*S).ch[i];
+    }
+    (*Sub).length=len;
+    return OK;
+}
+void InitString(HString *T){
+    (*T).ch=NULL;
+    (*T).length=0;
+}
+int Index(HString S,HString T,int pos){
+    int lenS=StrLength(S),lenT=StrLength(T);
+    int i=pos,j=1;
+    while(i<lenS&&j<lenT) {
+        if(S.ch[i]==T.ch[j]){
+            i++;
+            j++
+        }else{
+            i-j+2;
+            j=1;
+        }
+    }
+    if(j==lenT){
+        return i;
+    }else{
+        return 0;
+    }
+}
+Status StrLength(HString *S,int pos,HString T){
+    if ( pos<1||pos>StrLength(S)+1 ) {
+        return ERROR;
+    }
+    if (T.length) {//probable empty
+        (*S).ch=(char*)realloc((*S).ch,(T.length+(*S).length)*sizeof(char));
+        if(!(*S).ch){
+            exit(OVERFLOW);
+        }
+        for ( int i = (*S).length-1; i >=pos-1; i-- ) {
+            (*S).ch[i+T.length]=(*S).ch[i];
+        }
+        for ( int j = pos-1; j < pos+T.length; j++ ) {
+            (*S).ch[j]=T.ch[j-pos+1];//one is from jishuciweixu
+        }
+        (*S).length+=T.length;
+    }
+    return OK;
+}
+Status StrDelete(HString *S,int pos,int len){
+    if(pos<1||pos>(*S).length||len>(*S).length-pos||len<1){
+        return ERROR;
+    }
+    for ( int i = pos-1; i < (*S).length-len; i++ ) {
+        (*S).ch[i]=(*S).ch[i+len];
+    }
+    (*S).length-=len;
+    (*S).ch=(char*)realloc((*S).ch,(*S).length*sizeof(char));
+    return OK;
+}
+Status Replace(HString *S,HString T,HString V){
+    int i=1;
+    if(StrEmpty(T)){
+        return ERROR;
+    }
+    while(i){
+        i=Index(*S,T,i);
+        if(i){
+            StrDelete(S,i,StrLength(T));
+            StrInsert(S,i,v);
+            i+=StrLength(V);
+        }
+    }
+    return OK;
+}
+//堆分配字符串无法销毁？
